@@ -1,57 +1,73 @@
 <div class="container">
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <h3>Create Post</h3>
       <form #postForm="ngForm" (ngSubmit)="onCreatePost(postForm.value)">
         <div class="form-group">
           <label for="title">Title</label>
-          <input
-            type="text"
-            class="form-control"
-            id="title"
-            required
-            ngModel
-            name="title"
-          />
+          <input type="text" class="form-control" id="title" required ngModel name="title"/>
         </div>
         <div class="form-group">
           <label for="content">Content</label>
-          <textarea
-            class="form-control"
-            id="content"
-            required
-            ngModel
-            name="content"
-          ></textarea>
+          <textarea class="form-control" id="content" required ngModel name="content"></textarea>
         </div>
-        <button
-          class="btn btn-primary"
-          type="submit"
-          [disabled]="!postForm.valid"
-        >
+        <button class="btn btn-primary" id="btn-post" type="submit" [disabled]="!postForm.valid">
           Send Post
         </button>
       </form>
     </div>
   </div>
-  <hr />
+  <hr/>
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
       <button class="btn btn-primary" (click)="onFetchPosts()">
         Fetch Posts
       </button>
       |
-      <button
-        class="btn btn-danger"
-        [disabled]="loadedPosts.length < 1"
-        (click)="onClearPosts()"
-      >
+      <button class="btn btn-danger" [disabled]="loadedPosts.length < 1" (click)="onClearPosts()">
         Clear Posts
       </button>
     </div>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="updateClick">
+    <hr/>
     <div class="col-xs-12 col-md-6 col-md-offset-3">
-      <p>No posts available!</p>
+      <h3>Update Post</h3>
+      <form #updateForm="ngForm" (ngSubmit)="onUpdatePost(updateForm.value)">
+        <div class="form-group">
+          <label for="id">ID</label>
+          <input type="text" class="form-control" id="id" ngModel name="id" readonly/>
+        </div>
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" required ngModel name="title"/>
+        </div>
+        <div class="form-group">
+          <label for="content">Content</label>
+          <textarea class="form-control" id="content" required ngModel name="content"></textarea>
+        </div>
+        <button class="btn btn-primary" id="btn-update" type="submit" [disabled]="!updateForm.valid">
+          Update Post
+        </button>
+      </form>
+    </div>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="alert alert-danger" role="alert" *ngIf="error">
+      <h3>An error occurred!</h3>
+      <p>{{ error.message }}</p>
+    </div>
+    <div class="spinner-border" role="status" *ngIf="showLoading && !error"></div>
+    <span class="sr-only" *ngIf="showLoading && !error">Loading . . .</span>
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <p *ngIf="loadedPosts.length < 1 && !showLoading">No posts available!</p>
+      <ul class="list-group" *ngIf="loadedPosts.length >= 1 && !showLoading">
+        <li class="list-group-item" *ngFor="let post of loadedPosts" (click)="togglePostUpdate(post)">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.content }}</p>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
